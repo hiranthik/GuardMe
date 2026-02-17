@@ -14,7 +14,7 @@ export default async function LoginPage() {
 
       <form
         action={async () => {
-          "use server";
+          "use server";//directive 
           await signIn("google");
         }}
       >
