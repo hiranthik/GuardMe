@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Adding this will make your dashboard background 
+   light gray so the white cards stand out better */
+body {
+  @apply bg-slate-50 text-slate-900;
+}

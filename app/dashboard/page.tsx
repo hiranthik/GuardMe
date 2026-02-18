@@ -1,53 +1,40 @@
-"use client";
+// app/dashboard/page.tsx
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import LogoutButton from "@/components/logout/LogoutButton";
+import DashboardClient from "./DashBoardClient"; // Import the client wrapper
+import { LiteracyCard } from "@/components/dashboard/kpis/LiteracyCard";
+import { AwarenessCard } from "@/components/dashboard/kpis/AwarenessCard";
+import { AccessCard } from "@/components/dashboard/kpis/AccessCard";
+import { AtRiskCardCard } from "@/components/dashboard/kpis/AtRiskCard";
 
-import LiteracyKpiCard from "@/components/LiteracyKpiCard";
-import { useQuery } from "@tanstack/react-query";
+export default async function DashboardPage() {
+  const session = await auth();
 
-function computeOverallLiteracy(rows: string[][] | null): number {
-  if (!rows || rows.length === 0) return 0;
-
-  const totalStudents = rows.length;
-  const totalQuestions = 20;
-
-  const totalCorrect = rows.reduce((sum, row) => {
-    const scoreCell = row[0];
-    if (!scoreCell) return sum;
-
-    const [scoreStr] = scoreCell.split("/");
-    const scoreNum = parseInt(scoreStr.trim(), 10);
-
-    return sum + (isNaN(scoreNum) ? 0 : scoreNum);
-  }, 0);
-
-  return (totalCorrect / (totalStudents * totalQuestions)) * 100;
-}
-
-export default function DashboardPage() {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["survey-rows"],
-    queryFn: async () => {
-      const res = await fetch("/api/survey");
-      if (!res.ok) throw new Error("Failed to fetch survey data");
-      return res.json();
-    },
-    refetchInterval: 60000,
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-  });
-
-  const rows = data?.rows ?? [];
-  const literacyRate = computeOverallLiteracy(rows);
-
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p className="text-red-500">Error loading data</p>;
+  if (!session) {
+    redirect("/login");
+  }
 
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
-      <LiteracyKpiCard
-  literacyScore={literacyRate}
-  totalRows={rows.length}
-/>
-    </main>
+    <div className="min-h-screen bg-slate-50">
+      {/* Header / Nav */}
+      <nav className="flex justify-between items-center p-4 bg-white border-b shadow-sm">
+        <span className="font-bold text-xl text-blue-600">GuardME</span>
+        <LogoutButton />
+      </nav>
+
+      <main className="p-8">
+        <h1 className="text-2xl font-bold mb-6">Welcome back, {session.user?.name}</h1>
+        
+        {/* Render the Client Component that does the fetching */}
+        <DashboardClient />
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-7xl mx-auto">
+        <LiteracyCard />
+        <AwarenessCard />
+        <AccessCard/>
+        <AtRiskCardCard/>
+        </div>
+      </main>
+    </div>
   );
 }
