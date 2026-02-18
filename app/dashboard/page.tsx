@@ -1,50 +1,53 @@
 "use client";
 
-import { useQuery} from "@tanstack/react-query";
-import { signOut } from "next-auth/react";
+import LiteracyKpiCard from "@/components/LiteracyKpiCard";
+import { useQuery } from "@tanstack/react-query";
 
+function computeOverallLiteracy(rows: string[][] | null): number {
+  if (!rows || rows.length === 0) return 0;
 
-type SurveyStats = {
-  totalResponses:number;
-  averageRating:number;
+  const totalStudents = rows.length;
+  const totalQuestions = 20;
 
-};
+  const totalCorrect = rows.reduce((sum, row) => {
+    const scoreCell = row[0];
+    if (!scoreCell) return sum;
+
+    const [scoreStr] = scoreCell.split("/");
+    const scoreNum = parseInt(scoreStr.trim(), 10);
+
+    return sum + (isNaN(scoreNum) ? 0 : scoreNum);
+  }, 0);
+
+  return (totalCorrect / (totalStudents * totalQuestions)) * 100;
+}
 
 export default function DashboardPage() {
-  const { data, isLoading, error } = useQuery<SurveyStats>({
-    queryKey: ["survey-stats"],
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["survey-rows"],
     queryFn: async () => {
       const res = await fetch("/api/survey");
-      if (!res.ok) throw new Error("Failed to fetch survey stats");
+      if (!res.ok) throw new Error("Failed to fetch survey data");
       return res.json();
     },
-
-    // 🔥 Poll every 30 seconds
     refetchInterval: 60000,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
   });
 
+  const rows = data?.rows ?? [];
+  const literacyRate = computeOverallLiteracy(rows);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">Error loading data</p>;
+
   return (
     <main className="p-8">
-      <h1>Dashboard</h1>
-
-      <button
-        onClick={() => signOut({ callbackUrl: "/login" })}
-        className="mb-4"
-      >
-        Log out
-      </button>
-
-      {isLoading && <p>Loading...</p>}
-      {error && <p>Error loading stats</p>}
-
-      {data && (
-        <div>
-          <p>Total Responses: {data.totalResponses}</p>
-          <p>Average Rating: {data.averageRating}</p>
-        </div>
-      )}
+      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      <LiteracyKpiCard
+  literacyScore={literacyRate}
+  totalRows={rows.length}
+/>
     </main>
   );
 }

@@ -13,26 +13,12 @@ export async function GET() {
   try {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-      range: "Form Responses 1!A2:D", // adjust your sheet
+      range: "Form Responses 1!A2:A", // only Score column
     });
 
-    const rows = response.data.values ?? [];
+    const rows = response.data.values ?? []; // [["20/20"], ["18/20"], ...]
 
-    const totalResponses = rows.length;
-
-    const ratings = rows
-      .map((row) => Number(row[2]))
-      .filter((v) => !isNaN(v));
-
-    const averageRating =
-      ratings.length > 0
-        ? ratings.reduce((a, b) => a + b, 0) / ratings.length
-        : 0;
-
-    return NextResponse.json({
-      totalResponses,
-      averageRating: Number(averageRating.toFixed(2)),
-    });
+    return NextResponse.json({ rows }); // send rows to frontend
   } catch (error) {
     console.error(error);
     return NextResponse.json(
