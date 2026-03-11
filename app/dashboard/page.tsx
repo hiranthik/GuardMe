@@ -7,6 +7,12 @@ import { LiteracyCard } from "@/components/dashboard/kpis/LiteracyCard";
 import { AwarenessCard } from "@/components/dashboard/kpis/AwarenessCard";
 import { AccessCard } from "@/components/dashboard/kpis/AccessCard";
 import { AtRiskCardCard } from "@/components/dashboard/kpis/AtRiskCard";
+import LiteracyTrendChart from "@/components/dashboard/charts/LiteracyTrendChart";
+import AwarenessSnapshot from "@/components/dashboard/charts/AwarenessSnapshot";
+import CampusLiteracyChart from "@/components/dashboard/charts/CampusLiteracyChart";
+import SubgroupAnalysisTable from "@/components/dashboard/charts/SubgroupAnalysisTable";
+import { TopBarriers } from "@/components/dashboard/charts/TopBarriers";
+import { Methodology } from "@/components/dashboard/charts/Methodology";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -23,7 +29,7 @@ export default async function DashboardPage() {
         <LogoutButton />
       </nav>
 
-      <main className="p-8">
+      <main className="p-8 max-w-7xl mx-auto dashboard-theme">
         <h1 className="text-2xl font-bold mb-6">Welcome back, {session.user?.name}</h1>
         
         {/* Render the Client Component that does the fetching */}
@@ -34,6 +40,30 @@ export default async function DashboardPage() {
         <AccessCard/>
         <AtRiskCardCard/>
         </div>
+       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+    
+    {/* LEFT: Literacy Trend Chart (Takes up 2/3 of the row) */}
+    <div className="lg:col-span-8 mt-8">
+       <LiteracyTrendChart /> 
+    </div>
+
+    {/* RIGHT: Awareness Snapshot (Pushed to the corner) */}
+    <div className="lg:col-span-4 mt-8">
+       <AwarenessSnapshot />
+    </div>
+
+  </div>
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
+          <CampusLiteracyChart></CampusLiteracyChart>
+          <SubgroupAnalysisTable></SubgroupAnalysisTable>
+        </div>
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
+          <TopBarriers></TopBarriers>
+          <Methodology></Methodology>
+        </div>
+        
+
+       
       </main>
     </div>
   );
