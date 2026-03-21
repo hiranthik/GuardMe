@@ -1,6 +1,8 @@
 // app/dashboard/DashboardClient.tsx
 'use client';
 
+import CampusLiteracyChart from '@/components/dashboard/charts/CampusLiteracyChart';
+import SubgroupAnalysisTable from '@/components/dashboard/charts/SubgroupAnalysisTable';
 import { useQuery } from '@tanstack/react-query';
 
 
@@ -19,8 +21,12 @@ export default function DashboardClient() {
   const rows = data?.rows || [];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-    
+    <><div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <CampusLiteracyChart rawData={rows} />
+  <SubgroupAnalysisTable rawData={rows}></SubgroupAnalysisTable>
     </div>
+    <div>
+      
+      </div></>
   );
 }

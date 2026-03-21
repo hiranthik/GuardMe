@@ -9,10 +9,10 @@ import { AccessCard } from "@/components/dashboard/kpis/AccessCard";
 import { AtRiskCardCard } from "@/components/dashboard/kpis/AtRiskCard";
 import LiteracyTrendChart from "@/components/dashboard/charts/LiteracyTrendChart";
 import AwarenessSnapshot from "@/components/dashboard/charts/AwarenessSnapshot";
-import CampusLiteracyChart from "@/components/dashboard/charts/CampusLiteracyChart";
 import SubgroupAnalysisTable from "@/components/dashboard/charts/SubgroupAnalysisTable";
 import { TopBarriers } from "@/components/dashboard/charts/TopBarriers";
 import { Methodology } from "@/components/dashboard/charts/Methodology";
+import CampusLiteracyChart from "@/components/dashboard/charts/CampusLiteracyChart";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -54,8 +54,7 @@ export default async function DashboardPage() {
 
   </div>
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
-          <CampusLiteracyChart></CampusLiteracyChart>
-          <SubgroupAnalysisTable></SubgroupAnalysisTable>
+       
         </div>
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
           <TopBarriers></TopBarriers>

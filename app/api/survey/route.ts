@@ -13,7 +13,7 @@ export async function GET() {
   try {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-      range: "Form Responses 1!A2:A", // only Score column
+     range: "Form Responses 1!A2:AC", // Score (A) + Campus (B)
     });
 
     const rows = response.data.values ?? []; // [["20/20"], ["18/20"], ...]
