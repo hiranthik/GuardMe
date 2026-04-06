@@ -34,18 +34,32 @@ export default function LiteracyTrendChart({ rawData }: LiteracyTrendChartProps)
   }> = {};
 
   rawData.forEach((row) => {
-    const scoreRaw     = Array.isArray(row[0])  ? row[0][0]  : row[0];
-    const yearRaw      = Array.isArray(row[2])  ? row[2][0]  : row[2];
-    const domIntRaw    = Array.isArray(row[5])  ? row[5][0]  : row[5];
-    const timestampRaw = Array.isArray(row[27]) ? row[27][0] : row[27];
+    const scoreRaw     = Array.isArray(row[29]) ? row[29][0] : row[29]; // col AD = index 29
+    const yearRaw      = Array.isArray(row[2])  ? row[2][0]  : row[2];  // col C  = index 2
+    const domIntRaw    = Array.isArray(row[5])  ? row[5][0]  : row[5];  // col F  = index 5
+    const timestampRaw = Array.isArray(row[0])  ? row[0][0]  : row[0];  // col A  = index 0
 
-    const score = parseFloat(String(scoreRaw).split('/')[0].trim());
+    const score = parseFloat(String(scoreRaw).trim());
     if (isNaN(score)) return;
 
     const isFirstYear     = String(yearRaw).toLowerCase().includes('first');
     const isInternational = String(domIntRaw).toLowerCase().includes('international');
 
-    const date = String(timestampRaw).split(' ')[0].split('T')[0];
+    // Handle both ISO and Google Sheets date formats
+    const rawStr = String(timestampRaw);
+    const parsed = new Date(rawStr);
+    let date: string | null = null;
+
+    if (!isNaN(parsed.getTime())) {
+      date = parsed.toISOString().split('T')[0];
+    } else {
+      const parts = rawStr.split(' ')[0].split('/');
+      if (parts.length === 3) {
+        const [m, d, y] = parts;
+        date = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+      }
+    }
+
     if (!date) return;
 
     if (!dateMap[date]) {
@@ -79,14 +93,13 @@ export default function LiteracyTrendChart({ rawData }: LiteracyTrendChartProps)
   });
 
   const chartData = filteredData.map((item) => ({
-  ...item,
-  label: new Date(item.date + 'T00:00:00').toLocaleDateString('en-CA', {
-    month: 'short',
-    day: 'numeric',
-  }),
-}));
+    ...item,
+    label: new Date(item.date + 'T00:00:00').toLocaleDateString('en-CA', {
+      month: 'short',
+      day: 'numeric',
+    }),
+  }));
 
-  // Dynamic Y axis minimum
   const allValues = chartData.flatMap(d => [d.Overall, d['First Year'], d.International]).filter(Boolean) as number[];
   const minVal = allValues.length > 0 ? Math.floor(Math.min(...allValues) / 5) * 5 - 5 : 0;
 
@@ -111,7 +124,7 @@ export default function LiteracyTrendChart({ rawData }: LiteracyTrendChartProps)
       {/* Header row with title + legend */}
       <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
         <h3 className="text-lg font-bold text-gray-800">
-          Literacy Trends — Last 8 Weeks
+          Literacy Trends
         </h3>
         <CustomLegend />
       </div>
@@ -138,13 +151,13 @@ export default function LiteracyTrendChart({ rawData }: LiteracyTrendChartProps)
             <CartesianGrid strokeDasharray="" stroke="#f0f0f0" vertical={false} />
             <XAxis
               dataKey="label"
-              tick={{ fontSize: 12, fill: '#838388' }}
+              tick={{ fontSize: 12, fill: '#9ca3af' }}
               tickLine={false}
               axisLine={false}
             />
             <YAxis
               tickFormatter={(v) => `${v}%`}
-              tick={{ fontSize: 12, fill: '#838388' }}
+              tick={{ fontSize: 12, fill: '#9ca3af' }}
               tickLine={false}
               axisLine={false}
               domain={[minVal, 100]}

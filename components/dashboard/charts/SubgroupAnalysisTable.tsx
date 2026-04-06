@@ -36,15 +36,15 @@ export default function SubgroupAnalysisTable({ rawData }: SubgroupAnalysisTable
   }
 
   rawData.forEach((row) => {
-    const scoreRaw      = Array.isArray(row[0])  ? row[0][0]  : row[0];  // column A
-    const yearRaw       = Array.isArray(row[2])  ? row[2][0]  : row[2];  // column C
-    const domIntRaw     = Array.isArray(row[5])  ? row[5][0]  : row[5];  // column F
-    const accessRaw     = Array.isArray(row[6])  ? row[6][0]  : row[6];  // column G
-    const quickHelpRaw  = Array.isArray(row[16]) ? row[16][0] : row[16]; // column Q
-    const confidRaw     = Array.isArray(row[26]) ? row[26][0] : row[26]; // column AA
-    const afterHoursRaw = Array.isArray(row[19]) ? row[19][0] : row[19]; // column T
+    const scoreRaw      = Array.isArray(row[29]) ? row[29][0] : row[29]; // col AD = index 29
+    const yearRaw       = Array.isArray(row[2])  ? row[2][0]  : row[2];  // col C  = index 2
+    const domIntRaw     = Array.isArray(row[5])  ? row[5][0]  : row[5];  // col F  = index 5
+    const accessRaw     = Array.isArray(row[6])  ? row[6][0]  : row[6];  // col G  = index 6
+    const quickHelpRaw  = Array.isArray(row[16]) ? row[16][0] : row[16]; // col Q  = index 15
+    const confidRaw     = Array.isArray(row[26]) ? row[26][0] : row[26]; // col AA = index 25
+    const afterHoursRaw = Array.isArray(row[19]) ? row[19][0] : row[19]; // col T  = index 18
 
-    const score = parseFloat(String(scoreRaw).split('/')[0].trim());
+    const score = parseFloat(String(scoreRaw).trim());
     if (isNaN(score)) return;
 
     const isFirstYear       = String(yearRaw).toLowerCase().includes('first');
@@ -52,7 +52,7 @@ export default function SubgroupAnalysisTable({ rawData }: SubgroupAnalysisTable
     const isAccess          = String(accessRaw).toLowerCase().includes('yes');
     const isQuickHelp       = String(quickHelpRaw).toLowerCase().includes('by calling 988');
     const isConfidentiality = row[26] === true || String(confidRaw).toLowerCase() === 'true';
-    const isAfterHours      = String(afterHoursRaw).toLowerCase().includes('yes');
+    const isAfterHours      = String(afterHoursRaw).toLowerCase().includes('988 and guard me');
 
     const awarenessScore = (isQuickHelp ? 1 : 0) + (isConfidentiality ? 1 : 0) + (isAfterHours ? 1 : 0);
 
@@ -72,21 +72,40 @@ export default function SubgroupAnalysisTable({ rawData }: SubgroupAnalysisTable
     const g = stats[group];
     return {
       group,
-      // % of questions this group got right on average
       literacy: g.count > 0
         ? `${((g.totalScore / (g.count * 20)) * 100).toFixed(1)}%`
         : '0%',
-      // % of students in this group who said yes to access
       access: g.count > 0
         ? `${((g.access / g.count) * 100).toFixed(1)}%`
         : '0%',
-      // % of possible awareness points this group scored (max 3 per student)
       awareness: g.count > 0
         ? `${((g.awareness / (g.count * 3)) * 100).toFixed(1)}%`
         : '0%',
       count: g.count,
     };
   });
+
+
+  const handleExportCSV = () => {
+    const headers = ['Group', 'Literacy', 'Access', 'Awareness', 'Count'];
+    const rows = tableData.map((item) => [
+      item.group,
+      item.literacy,
+      item.access,
+      item.awareness,
+      item.count,
+    ]);
+
+    const csv = [headers, ...rows].map((row) => row.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'subgroup-analysis.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
 
   return (
     <Card className="p-6">
@@ -96,6 +115,7 @@ export default function SubgroupAnalysisTable({ rawData }: SubgroupAnalysisTable
           variant="secondary"
           size="xs"
           className="rounded-full bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+          onClick={handleExportCSV}
         >
           Export CSV
         </Button>

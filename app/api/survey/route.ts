@@ -9,16 +9,28 @@ const auth = new google.auth.JWT({
 
 const sheets = google.sheets({ version: "v4", auth });
 
+// simple cache
+let cache: { rows: any[]; timestamp: number } | null = null;
+const CACHE_TTL = 30 * 1000; // 30 seconds
+
 export async function GET() {
   try {
+    // return cached data if fresh
+    if (cache && Date.now() - cache.timestamp < CACHE_TTL) {
+      return NextResponse.json({ rows: cache.rows });
+    }
+
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-     range: "Form Responses 1!A2:AD", 
+      range: "Sheet1!A2:AD",
     });
 
-    const rows = response.data.values ?? []; 
+    const rows = response.data.values ?? [];
 
-    return NextResponse.json({ rows }); 
+    // update cache
+    cache = { rows, timestamp: Date.now() };
+
+    return NextResponse.json({ rows });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
@@ -26,4 +38,9 @@ export async function GET() {
       { status: 500 }
     );
   }
+}
+
+// called by Apps Script webhook to bust the cache instantly
+export function bustCache() {
+  cache = null;
 }
