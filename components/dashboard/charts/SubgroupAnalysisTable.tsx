@@ -24,11 +24,11 @@ const GROUPS = [
 
 export default function SubgroupAnalysisTable({ rawData }: SubgroupAnalysisTableProps) {
 
-  const stats: Record<string, { totalScore: number; count: number; access:number }> = {
-    'First-year - International': { totalScore: 0, count: 0 , access: 0},
-    'First-year - Domestic': { totalScore: 0, count: 0, access: 0 },
-    'Upper-year - International': { totalScore: 0, count: 0, access: 0 },
-    'Upper-year - Domestic': { totalScore: 0, count: 0, access: 0 },
+  const stats: Record<string, { totalScore: number; count: number; access: number; awareness: number }> = {
+    'First-year - International': { totalScore: 0, count: 0, access: 0, awareness: 0 },
+    'First-year - Domestic':      { totalScore: 0, count: 0, access: 0, awareness: 0 },
+    'Upper-year - International': { totalScore: 0, count: 0, access: 0, awareness: 0 },
+    'Upper-year - Domestic':      { totalScore: 0, count: 0, access: 0, awareness: 0 },
   };
 
   if (!rawData || rawData.length === 0) {
@@ -36,45 +36,57 @@ export default function SubgroupAnalysisTable({ rawData }: SubgroupAnalysisTable
   }
 
   rawData.forEach((row) => {
-    const scoreRaw = Array.isArray(row[0]) ? row[0][0] : row[0];
-    const yearRaw = Array.isArray(row[2]) ? row[2][0] : row[2]; // column C
-    const domIntRaw = Array.isArray(row[5]) ? row[5][0] : row[5]; // column F
-    const accessInt = Array.isArray(row[28]) ?row[28][0] : row[28] // column AC
+    const scoreRaw      = Array.isArray(row[0])  ? row[0][0]  : row[0];  // column A
+    const yearRaw       = Array.isArray(row[2])  ? row[2][0]  : row[2];  // column C
+    const domIntRaw     = Array.isArray(row[5])  ? row[5][0]  : row[5];  // column F
+    const accessRaw     = Array.isArray(row[6])  ? row[6][0]  : row[6];  // column G
+    const quickHelpRaw  = Array.isArray(row[16]) ? row[16][0] : row[16]; // column Q
+    const confidRaw     = Array.isArray(row[26]) ? row[26][0] : row[26]; // column AA
+    const afterHoursRaw = Array.isArray(row[19]) ? row[19][0] : row[19]; // column T
 
     const score = parseFloat(String(scoreRaw).split('/')[0].trim());
-    const isFirstYear = String(yearRaw).toLowerCase().includes('first');
-    const isInternational = String(domIntRaw).toLowerCase().includes('international');
-    const isAccess = String(accessInt).toLowerCase().includes('yes');
+    if (isNaN(score)) return;
 
-    const year = isFirstYear ? 'First-year' : 'Upper-year';
+    const isFirstYear       = String(yearRaw).toLowerCase().includes('first');
+    const isInternational   = String(domIntRaw).toLowerCase().includes('international');
+    const isAccess          = String(accessRaw).toLowerCase().includes('yes');
+    const isQuickHelp       = String(quickHelpRaw).toLowerCase().includes('by calling 988');
+    const isConfidentiality = row[26] === true || String(confidRaw).toLowerCase() === 'true';
+    const isAfterHours      = String(afterHoursRaw).toLowerCase().includes('yes');
+
+    const awarenessScore = (isQuickHelp ? 1 : 0) + (isConfidentiality ? 1 : 0) + (isAfterHours ? 1 : 0);
+
+    const year   = isFirstYear     ? 'First-year'    : 'Upper-year';
     const origin = isInternational ? 'International' : 'Domestic';
-
-    const group = `${year} - ${origin}`;
+    const group  = `${year} - ${origin}`;
 
     if (stats[group]) {
       stats[group].totalScore += score;
-      stats[group].count += 1;
-      if(isAccess) stats[group].access+=1;
+      stats[group].count      += 1;
+      if (isAccess) stats[group].access += 1;
+      stats[group].awareness += awarenessScore;
     }
   });
-  
 
-  // Total score across ALL students for percentage of whole
-  const grandTotal = Object.values(stats).reduce((sum, g) => sum + g.totalScore, 0);
-  const totalAccessCount = Object.values(stats).reduce((sum, g) => sum + g.access, 0); 
-
-  const tableData = GROUPS.map((group) => ({
-    group,
-    literacy: grandTotal > 0
-      ? `${((stats[group].totalScore / grandTotal) * 100).toFixed(1)}%` 
-      : '0%',
-      access: totalAccessCount > 0                                                        
-    ? `${((stats[group].access / totalAccessCount) * 100).toFixed(1)}%`
-    : '0%',
-    count: stats[group].count,
-  }
-)
-);
+  const tableData = GROUPS.map((group) => {
+    const g = stats[group];
+    return {
+      group,
+      // % of questions this group got right on average
+      literacy: g.count > 0
+        ? `${((g.totalScore / (g.count * 20)) * 100).toFixed(1)}%`
+        : '0%',
+      // % of students in this group who said yes to access
+      access: g.count > 0
+        ? `${((g.access / g.count) * 100).toFixed(1)}%`
+        : '0%',
+      // % of possible awareness points this group scored (max 3 per student)
+      awareness: g.count > 0
+        ? `${((g.awareness / (g.count * 3)) * 100).toFixed(1)}%`
+        : '0%',
+      count: g.count,
+    };
+  });
 
   return (
     <Card className="p-6">
@@ -94,8 +106,9 @@ export default function SubgroupAnalysisTable({ rawData }: SubgroupAnalysisTable
           <TableRow>
             <TableHeaderCell className="text-[11px] font-bold uppercase text-slate-500 tracking-wider">GROUP</TableHeaderCell>
             <TableHeaderCell className="text-[11px] font-bold uppercase text-slate-500 tracking-wider">LITERACY</TableHeaderCell>
+            <TableHeaderCell className="text-[11px] font-bold uppercase text-slate-500 tracking-wider">ACCESS</TableHeaderCell>
+            <TableHeaderCell className="text-[11px] font-bold uppercase text-slate-500 tracking-wider">AWARENESS</TableHeaderCell>
             <TableHeaderCell className="text-[11px] font-bold uppercase text-slate-500 tracking-wider">COUNT</TableHeaderCell>
-             <TableHeaderCell className="text-[11px] font-bold uppercase text-slate-500 tracking-wider">ACCESS</TableHeaderCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -105,8 +118,9 @@ export default function SubgroupAnalysisTable({ rawData }: SubgroupAnalysisTable
                 {item.group}
               </TableCell>
               <TableCell className="text-sm font-medium text-slate-600">{item.literacy}</TableCell>
-              <TableCell className="text-sm font-medium text-slate-600">{item.count}</TableCell>
               <TableCell className="text-sm font-medium text-slate-600">{item.access}</TableCell>
+              <TableCell className="text-sm font-medium text-slate-600">{item.awareness}</TableCell>
+              <TableCell className="text-sm font-medium text-slate-600">{item.count}</TableCell>
             </TableRow>
           ))}
         </TableBody>

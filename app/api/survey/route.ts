@@ -13,12 +13,12 @@ export async function GET() {
   try {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-     range: "Form Responses 1!A2:AC", // Score (A) + Campus (B)
+     range: "Form Responses 1!A2:AD", 
     });
 
-    const rows = response.data.values ?? []; // [["20/20"], ["18/20"], ...]
+    const rows = response.data.values ?? []; 
 
-    return NextResponse.json({ rows }); // send rows to frontend
+    return NextResponse.json({ rows }); 
   } catch (error) {
     console.error(error);
     return NextResponse.json(

@@ -1,441 +1,189 @@
 'use client';
 
 import { useState } from 'react';
-import { DateRangePicker, DateRangePickerValue, LineChart } from '@tremor/react';
+import { DateRangePicker, DateRangePickerValue } from '@tremor/react';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 
-const data = [
-  {
-    date: '2023-08-01',
-    'Overall': 2100.2,
-    'First-Year': 4434.1,
-    'International': 7943.2,
-  },
-  {
-    date: '2023-08-02',
-    'Overall': 2943.0,
-    'First-Year': 4954.1,
-    'International': 8954.1,
-  },
-  {
-    date: '2023-08-03',
-    'Overall': 4889.5,
-    'First-Year': 6100.2,
-    'International': 9123.7,
-  },
-  {
-    date: '2023-08-04',
-    'Overall': 3909.8,
-    'First-Year': 4909.7,
-    'International': 7478.4,
-  },
-  {
-    date: '2023-08-05',
-    'Overall': 5778.7,
-    'First-Year': 7103.1,
-    'International': 9504.3,
-  },
-  {
-    date: '2023-08-06',
-    'Overall': 5900.9,
-    'First-Year': 7534.3,
-    'International': 9943.4,
-  },
-  {
-    date: '2023-08-07',
-    'Overall': 4129.4,
-    'First-Year': 7412.1,
-    'International': 10112.2,
-  },
-  {
-    date: '2023-08-08',
-    'Overall': 6021.2,
-    'First-Year': 7834.4,
-    'International': 10290.2,
-  },
-  {
-    date: '2023-08-09',
-    'Overall': 6279.8,
-    'First-Year': 8159.1,
-    'International': 10349.6,
-  },
-  {
-    date: '2023-08-10',
-    'Overall': 6224.5,
-    'First-Year': 8260.6,
-    'International': 10415.4,
-  },
-  {
-    date: '2023-08-11',
-    'Overall': 6380.6,
-    'First-Year': 8965.3,
-    'International': 10636.3,
-  },
-  {
-    date: '2023-08-12',
-    'Overall': 6414.4,
-    'First-Year': 7989.3,
-    'International': 10900.5,
-  },
-  {
-    date: '2023-08-13',
-    'Overall': 6540.1,
-    'First-Year': 7839.6,
-    'International': 11040.4,
-  },
-  {
-    date: '2023-08-14',
-    'Overall': 6634.4,
-    'First-Year': 7343.8,
-    'International': 11390.5,
-  },
-  {
-    date: '2023-08-15',
-    'Overall': 7124.6,
-    'First-Year': 6903.7,
-    'International': 11423.1,
-  },
-  {
-    date: '2023-08-16',
-    'Overall': 7934.5,
-    'First-Year': 6273.6,
-    'International': 12134.4,
-  },
-  {
-    date: '2023-08-17',
-    'Overall': 10287.8,
-    'First-Year': 5900.3,
-    'International': 12034.4,
-  },
-  {
-    date: '2023-08-18',
-    'Overall': 10323.2,
-    'First-Year': 5732.1,
-    'International': 11011.7,
-  },
-  {
-    date: '2023-08-19',
-    'Overall': 10511.4,
-    'First-Year': 5523.1,
-    'International': 11834.8,
-  },
-  {
-    date: '2023-08-20',
-    'Overall': 11043.9,
-    'First-Year': 5422.3,
-    'International': 12387.1,
-  },
-  {
-    date: '2023-08-21',
-    'Overall': 6700.7,
-    'First-Year': 5334.2,
-    'International': 11032.2,
-  },
-  {
-    date: '2023-08-22',
-    'Overall': 6900.8,
-    'First-Year': 4943.4,
-    'International': 10134.2,
-  },
-  {
-    date: '2023-08-23',
-    'Overall': 7934.5,
-    'First-Year': 4812.1,
-    'International': 9921.2,
-  },
-  {
-    date: '2023-08-24',
-    'Overall': 9021.0,
-    'First-Year': 2729.1,
-    'International': 10549.8,
-  },
-  {
-    date: '2023-08-25',
-    'Overall': 9198.2,
-    'First-Year': 2178.0,
-    'International': 10968.4,
-  },
-  {
-    date: '2023-08-26',
-    'Overall': 9557.1,
-    'First-Year': 2158.3,
-    'International': 11059.1,
-  },
-  {
-    date: '2023-08-27',
-    'Overall': 9959.8,
-    'First-Year': 2100.8,
-    'International': 11903.6,
-  },
-  {
-    date: '2023-08-28',
-    'Overall': 10034.6,
-    'First-Year': 2934.4,
-    'International': 12143.3,
-  },
-  {
-    date: '2023-08-29',
-    'Overall': 10243.8,
-    'First-Year': 3223.4,
-    'International': 12930.1,
-  },
-  {
-    date: '2023-08-30',
-    'Overall': 10078.5,
-    'First-Year': 3779.1,
-    'International': 13420.5,
-  },
-  {
-    date: '2023-08-31',
-    'Overall': 11134.6,
-    'First-Year': 4190.3,
-    'International': 14443.2,
-  },
-  {
-    date: '2023-09-01',
-    'Overall': 12347.2,
-    'First-Year': 4839.1,
-    'International': 14532.1,
-  },
-  {
-    date: '2023-09-02',
-    'Overall': 12593.8,
-    'First-Year': 5153.3,
-    'International': 14283.5,
-  },
-  {
-    date: '2023-09-03',
-    'Overall': 12043.4,
-    'First-Year': 5234.8,
-    'International': 14078.9,
-  },
-  {
-    date: '2023-09-04',
-    'Overall': 12144.9,
-    'First-Year': 5478.4,
-    'International': 13859.7,
-  },
-  {
-    date: '2023-09-05',
-    'Overall': 12489.5,
-    'First-Year': 5741.1,
-    'International': 13539.2,
-  },
-  {
-    date: '2023-09-06',
-    'Overall': 12748.7,
-    'First-Year': 6743.9,
-    'International': 13643.2,
-  },
-  {
-    date: '2023-09-07',
-    'Overall': 12933.2,
-    'First-Year': 7832.8,
-    'International': 14629.2,
-  },
-  {
-    date: '2023-09-08',
-    'Overall': 13028.8,
-    'First-Year': 8943.2,
-    'International': 13611.2,
-  },
-  {
-    date: '2023-09-09',
-    'Overall': 13412.4,
-    'First-Year': 9932.2,
-    'International': 12515.2,
-  },
-  {
-    date: '2023-09-10',
-    'Overall': 13649.0,
-    'First-Year': 10139.2,
-    'International': 11143.8,
-  },
-  {
-    date: '2023-09-11',
-    'Overall': 13748.5,
-    'First-Year': 10441.2,
-    'International': 8929.2,
-  },
-  {
-    date: '2023-09-12',
-    'Overall': 13148.1,
-    'First-Year': 10933.8,
-    'International': 8943.2,
-  },
-  {
-    date: '2023-09-13',
-    'Overall': 12839.6,
-    'First-Year': 11073.4,
-    'International': 7938.3,
-  },
-  {
-    date: '2023-09-14',
-    'Overall': 12428.2,
-    'First-Year': 11128.3,
-    'International': 7533.4,
-  },
-  {
-    date: '2023-09-15',
-    'Overall': 12012.8,
-    'First-Year': 11412.3,
-    'International': 7100.4,
-  },
-  {
-    date: '2023-09-16',
-    'Overall': 11801.3,
-    'First-Year': 10501.1,
-    'International': 6532.1,
-  },
-  {
-    date: '2023-09-17',
-    'Overall': 10102.9,
-    'First-Year': 8923.3,
-    'International': 4332.8,
-  },
-  {
-    date: '2023-09-18',
-    'Overall': 12132.5,
-    'First-Year': 10212.1,
-    'International': 7847.4,
-  },
-  {
-    date: '2023-09-19',
-    'Overall': 12901.1,
-    'First-Year': 10101.7,
-    'International': 7223.3,
-  },
-  {
-    date: '2023-09-20',
-    'Overall': 13132.6,
-    'First-Year': 12132.3,
-    'International': 6900.2,
-  },
-  {
-    date: '2023-09-21',
-    'Overall': 14132.2,
-    'First-Year': 13212.5,
-    'International': 5932.2,
-  },
-  {
-    date: '2023-09-22',
-    'Overall': 14245.8,
-    'First-Year': 12163.4,
-    'International': 5577.1,
-  },
-  {
-    date: '2023-09-23',
-    'Overall': 14328.3,
-    'First-Year': 10036.1,
-    'International': 5439.2,
-  },
-  {
-    date: '2023-09-24',
-    'Overall': 14949.9,
-    'First-Year': 8985.1,
-    'International': 4463.1,
-  },
-  {
-    date: '2023-09-25',
-    'Overall': 15967.5,
-    'First-Year': 9700.1,
-    'International': 4123.2,
-  },
-  {
-    date: '2023-09-26',
-    'Overall': 17349.3,
-    'First-Year': 10943.4,
-    'International': 3935.1,
-  },
-];
-
-
-
-const valueFormatter = (number:number) =>
-  `$${Intl.NumberFormat('us').format(number).toString()}`;
-
-const firstAvailableDate = new Date(2023, 7, 1);
-const lastAvailableDate = new Date(2023, 8, 26);
-
-export default function LiteracyTrendChart() {
-  const [dateRange, setDateRange] = useState<DateRangePickerValue>({
-    from: firstAvailableDate,
-    to: lastAvailableDate,
-  });
-  const selectedStartDate = dateRange.from;
-  const selectedEndDate = dateRange.to;
-
-  interface DataPoint {
-  date: string;
-  [key: string]: string | number; // This allows for dynamic category names like 'Overall' or 'ETF Shares'
+interface LiteracyTrendChartProps {
+  rawData: any[];
 }
- const filterData = (startDate: Date | undefined, endDate: Date | undefined, dataset: DataPoint[]) => {
-    if (!startDate || !endDate) return dataset;
 
-const start = new Date(startDate.setHours(0, 0, 0, 0));
-  const end = new Date(endDate.setHours(23, 59, 59, 999));
+export default function LiteracyTrendChart({ rawData }: LiteracyTrendChartProps) {
 
-  return dataset.filter((item) => {
-    const currentDate = new Date(item.date + 'T00:00:00'); // Forces local time interpretation
-    return currentDate >= start && currentDate <= end;
-    });
-  };
+  const [dateRange, setDateRange] = useState<DateRangePickerValue>({
+    from: undefined,
+    to: undefined,
+  });
+
+  if (!rawData || rawData.length === 0) {
+    return <div className="p-10 bg-white rounded-xl border border-gray-200">No data available</div>;
+  }
+
+  const dateMap: Record<string, {
+    totalScore: number; count: number;
+    firstYearScore: number; firstYearCount: number;
+    intlScore: number; intlCount: number;
+  }> = {};
+
+  rawData.forEach((row) => {
+    const scoreRaw     = Array.isArray(row[0])  ? row[0][0]  : row[0];
+    const yearRaw      = Array.isArray(row[2])  ? row[2][0]  : row[2];
+    const domIntRaw    = Array.isArray(row[5])  ? row[5][0]  : row[5];
+    const timestampRaw = Array.isArray(row[27]) ? row[27][0] : row[27];
+
+    const score = parseFloat(String(scoreRaw).split('/')[0].trim());
+    if (isNaN(score)) return;
+
+    const isFirstYear     = String(yearRaw).toLowerCase().includes('first');
+    const isInternational = String(domIntRaw).toLowerCase().includes('international');
+
+    const date = String(timestampRaw).split(' ')[0].split('T')[0];
+    if (!date) return;
+
+    if (!dateMap[date]) {
+      dateMap[date] = { totalScore: 0, count: 0, firstYearScore: 0, firstYearCount: 0, intlScore: 0, intlCount: 0 };
+    }
+
+    dateMap[date].totalScore += score;
+    dateMap[date].count += 1;
+    if (isFirstYear)     { dateMap[date].firstYearScore += score; dateMap[date].firstYearCount += 1; }
+    if (isInternational) { dateMap[date].intlScore      += score; dateMap[date].intlCount      += 1; }
+  });
+
+  const dates = Object.keys(dateMap).sort();
+
+  const allChartData = dates.map((date) => {
+    const d = dateMap[date];
+    return {
+      date,
+      Overall:       d.count          > 0 ? Math.round((d.totalScore     / d.count          / 20) * 100) : null,
+      'First Year':  d.firstYearCount > 0 ? Math.round((d.firstYearScore / d.firstYearCount / 20) * 100) : null,
+      International: d.intlCount      > 0 ? Math.round((d.intlScore      / d.intlCount      / 20) * 100) : null,
+    };
+  });
+
+  const filteredData = allChartData.filter((item) => {
+    if (!dateRange.from && !dateRange.to) return true;
+    const itemDate = new Date(item.date);
+    if (dateRange.from && itemDate < dateRange.from) return false;
+    if (dateRange.to   && itemDate > dateRange.to)   return false;
+    return true;
+  });
+
+  const chartData = filteredData.map((item) => ({
+  ...item,
+  label: new Date(item.date + 'T00:00:00').toLocaleDateString('en-CA', {
+    month: 'short',
+    day: 'numeric',
+  }),
+}));
+
+  // Dynamic Y axis minimum
+  const allValues = chartData.flatMap(d => [d.Overall, d['First Year'], d.International]).filter(Boolean) as number[];
+  const minVal = allValues.length > 0 ? Math.floor(Math.min(...allValues) / 5) * 5 - 5 : 0;
+
+  const CustomLegend = () => (
+    <div className="flex items-center gap-6">
+      {[
+        { label: 'Overall',       color: '#3b82f6' },
+        { label: 'First Year',    color: '#8b5cf6' },
+        { label: 'International', color: '#06b6d4' },
+      ].map(({ label, color }) => (
+        <div key={label} className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
+          <span className="text-sm text-gray-600 font-medium">{label}</span>
+        </div>
+      ))}
+    </div>
+  );
+
   return (
-  <div className="p-10 bg-white rounded-xl border border-gray-200 shadow-sm w-full">
-    <h3 className="text-lg font-semibold text-tremor-content-strong">
-      Literacy Trend - Last 8 Weeks 
-    </h3>
-    <p className="text-tremor-default text-tremor-content">
-      Lorem ipsum dolor sit amet, consetetur sadipscing elitr.
-    </p>
+    <div className="p-8 bg-white rounded-xl border border-gray-200 shadow-sm w-full">
 
-   
-
-    <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-8">
-      
-    
-      <div className="md:col-span-3">
-        <LineChart
-          data={filterData(selectedStartDate, selectedEndDate, data)}
-          index="date"
-          categories={['Overall', 'First-Year', 'International']}
-         colors={['blue', 'violet', 'fuchsia']}
-  // Add this to force visibility
-  className="h-80 stroke-2"
-          valueFormatter={valueFormatter}
-          showYAxis={true}
-          yAxisWidth={65}
-          showLegend={false} 
-        
-          
-        />
+      {/* Header row with title + legend */}
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
+        <h3 className="text-lg font-bold text-gray-800">
+          Literacy Trends — Last 8 Weeks
+        </h3>
+        <CustomLegend />
       </div>
 
-      <div className="space-y-6 border-l border-gray-100 pl-6">
-        <div>
+      {/* Tremor DateRangePicker */}
+      <div className="flex items-center gap-4 mb-6">
+        <DateRangePicker
+          value={dateRange}
+          onValueChange={(value) => setDateRange(value)}
+          enableSelect={false}
+        />
+        <button
+          onClick={() => setDateRange({ from: undefined, to: undefined })}
+          className="text-sm text-slate-500 hover:text-slate-700 underline"
+        >
+          Reset
+        </button>
+      </div>
 
-          <div className="flex items-center gap-2">
-            <span className="w-1 h-8 bg-blue-500 rounded-full" />
-            <p className="text-sm text-gray-500 uppercase tracking-wider font-medium">Overall</p>
-          </div>
-        </div>
-        <div>
-
-          <div className="flex items-center gap-2">
-            <span className="w-1 h-8 bg-violet-500 rounded-full" />
-            <p className="text-sm text-gray-500 uppercase tracking-wider font-medium">First-Year</p>
-          </div>
-        </div>
-        <div>
-        
-          <div className="flex items-center gap-2">
-            <span className="w-1 h-8 bg-fuchsia-500 rounded-full" />
-            <p className="text-sm text-gray-500 uppercase tracking-wider font-medium">International</p>
-          </div>
-        </div>
-        
-        
-        
+      {/* Chart */}
+      <div className="h-80">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="" stroke="#f0f0f0" vertical={false} />
+            <XAxis
+              dataKey="label"
+              tick={{ fontSize: 12, fill: '#838388' }}
+              tickLine={false}
+              axisLine={false}
+            />
+            <YAxis
+              tickFormatter={(v) => `${v}%`}
+              tick={{ fontSize: 12, fill: '#838388' }}
+              tickLine={false}
+              axisLine={false}
+              domain={[minVal, 100]}
+              width={45}
+            />
+            <Tooltip
+              formatter={(value) => [`${value}%`]}
+              contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '13px' }}
+            />
+            <Line
+              type="monotone"
+              dataKey="Overall"
+              stroke="#3b82f6"
+              strokeWidth={2.5}
+              dot={{ r: 5, fill: '#3b82f6', strokeWidth: 0 }}
+              activeDot={{ r: 7 }}
+              connectNulls
+            />
+            <Line
+              type="monotone"
+              dataKey="First Year"
+              stroke="#8b5cf6"
+              strokeWidth={2.5}
+              dot={{ r: 5, fill: '#8b5cf6', strokeWidth: 0 }}
+              activeDot={{ r: 7 }}
+              connectNulls
+            />
+            <Line
+              type="monotone"
+              dataKey="International"
+              stroke="#06b6d4"
+              strokeWidth={2.5}
+              dot={{ r: 5, fill: '#06b6d4', strokeWidth: 0 }}
+              activeDot={{ r: 7 }}
+              connectNulls
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </div>
-  </div>
-)}
+  );
+}

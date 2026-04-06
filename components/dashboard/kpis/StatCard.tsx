@@ -1,9 +1,7 @@
-// components/dashboard/StatCard.tsx
 'use client';
 import { RiArrowDownSFill, RiArrowUpSFill } from '@remixicon/react';
 import { Card } from '@tremor/react';
 
-// This interface defines exactly what the component expects
 interface StatCardProps {
   name: string;
   stat: string;
@@ -26,9 +24,7 @@ export function StatCard({ name, stat, previousStat, change, changeType }: StatC
         <p className="text-tremor-metric font-semibold text-tremor-content-strong">
           {stat}
         </p>
-        <p className="text-tremor-default text-tremor-content">
-          from {previousStat}
-        </p>
+        
       </dd>
       <dd className="mt-4 flex items-center space-x-2">
         <p className="flex items-center space-x-0.5">

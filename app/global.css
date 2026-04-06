@@ -5,6 +5,25 @@
 /* app/globals.css */
 @layer components {
   .dashboard-theme {
-    @apply min-h-screen p-8 bg-gradient-to-br from-purple-200 via-white to-pink-200;
+    @apply min-h-screen p-8;
+    background: transparent; /* let the body gradient show through */
+  }
+  .dashboard-header {
+    background: linear-gradient(135deg, #f0edf2 0%, #e4dbf4 50%, #e5d8e4 100%) fixed;
+}
+ .pink-bg {
+    @apply bg-gradient-to-br from-purple-100 via-pink-50 to-pink-100;
+  }
+
+  .login{
+    background: linear-gradient(135deg, #9b41d7 0%, #ecb6d7 50%, #e5d8e4 100%) fixed
   }
 }
+
+html,
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #dbbeef 0%, #f2cee4 50%, #e5d8e4 100%) fixed;
+  background-size: cover;
+}
+
