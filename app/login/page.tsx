@@ -17,7 +17,7 @@ export default async function LoginPage() {
 
           <div>
                   <div className="card flex flex-col items-center gap-6 w-full max-w-sm text-center">
-            <h1 className="text-3xl font-semibold text-slate-800">Welcome back!</h1>
+            <h1 className="text-3xl font-semibold text-slate-800">Algoma Wellness : Student Mental Health Survey Dashboard</h1>
             <p className="text-sm text-slate-500 mt-1">Sign in to access your dashboard</p>
             </div>
           </div>
