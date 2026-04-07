@@ -131,12 +131,7 @@ export default function KPICards({ rawData }: KPICardsProps) {
     },
   ];
 
-  rawData.forEach((row) => {
-  console.log('Q value:', row[16]); // add this line temporarily
-  console.log('T value:', row[18]);
-  console.log('AA value:', row[25]);
-  // ... rest of your code
-});
+
  
   return (
     <>
