@@ -2,21 +2,23 @@ import { signIn, auth } from "@/auth";
 import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
-  const userSession = await auth();
+  const session = await auth();
 
-  if (userSession) {
+  if (session) {
     redirect("/dashboard");
   }
 
   return (
-
-    //divided screen 
-    <main className="min-h-screen flex">
-
+    <main className="min-h-screen flex  ">
       <div className="flex flex-col justify-center items-center w-full lg:w-1/2 px-8  pink-bg">
-          <div>    
-            <h1 className="text-3xl font-semibold text-slate-800"> Mindmetrics : Student Mental Health Literacy Dashboard</h1>
+        <div className="w-full max-w-sm flex flex-col gap-6">
+
+
+          <div>
+         <div className="card flex flex-col items-center gap-6 w-full max-w-sm text-center">
+            <h1 className="text-3xl font-semibold text-slate-800">MindMetrics: Student Mental Health Literacy Dashboard</h1>
             <p className="text-sm text-slate-500 mt-1">Sign in to access your dashboard</p>
+            </div>
           </div>
 
           <form
@@ -35,10 +37,14 @@ export default async function LoginPage() {
             </button>
           </form>
 
+        </div>
       </div>
+
+      <div className="hidden lg:flex w-1/2 items-center justify-center login">
       
-     <img src="image.png" alt="login visual" />
-    
+     <img src="/image.png" alt="login visual" />
+       </div>
+
     </main>
   );
 }
