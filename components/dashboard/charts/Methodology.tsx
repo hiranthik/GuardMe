@@ -2,10 +2,10 @@ import { Card } from "@tremor/react";
 
 export function Methodology() {
   const definitions = [
-    { label: "Literacy score", desc: "percent correct across scored items; multi-select items are counted correct only if they match the key exactly." },
-    { label: "Awareness (quick help)", desc: "percent selecting an approved quick-help path (for example 9-8-8, GuardMe, Wellness email) on scenario items." },
-    { label: "Access", desc: "percent reporting prior use of campus mental-health services." },
-    { label: "Privacy", desc: "small-N suppression at n < 5; only aggregates leave the server." },
+    {label: "Literacy score", desc: "percent correct across scored items; multi-select items are counted correct only if they match the key exactly." },
+    {label: "Awareness (quick help)", desc: "percent selecting an approved quick-help path (for example 9-8-8, GuardMe, Wellness email) on scenario items." },
+    {label: "Access", desc: "percent reporting prior use of campus mental-health services." },
+    {label: "Privacy", desc: "small-N suppression at n < 5; only aggregates leave the server." }
   ];
 
   return (

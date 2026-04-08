@@ -2,7 +2,7 @@
 
 import { Card, DonutChart } from '@tremor/react';
 
-interface AwarenessSnapshotProps {
+interface AwarenessSnapshot {
   rawData: any[];
 }
 
@@ -10,39 +10,41 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function AwarenessSnapshot({ rawData }: AwarenessSnapshotProps) {
+export default function AwarenessSnapshot({ rawData }: AwarenessSnapshot) {
 
-  if (!rawData || rawData.length === 0) {
-    return <Card className="p-6 h-72 flex items-center justify-center">No data available</Card>;
+if (!rawData || rawData.length === 0) {
+   return <Card className="p-6 h-72 flex items-center justify-center">No data available</Card>;
   }
 
-  const total = rawData.length;
-  let quickHelp = 0;
-  let crisis = 0;
-  let afterHours = 0;
+  const totalGrades = rawData.length;
+  let quickHelpGrade = 0;
+  let crisisGrade = 0;
+  let afterHoursGrade = 0;
 
   rawData.forEach((row) => {
-   const quickHelpRaw = Array.isArray(row[16]) ? row[16][0] : row[16];
-   if (String(quickHelpRaw).toLowerCase().includes('by calling 988')) quickHelp += 1; // column Q
+    //link to each column of the GS
+   const quickHelpRawData = Array.isArray(row[16]) ? row[16][0] : row[16];
+   if (String(quickHelpRawData).toLowerCase().includes('by calling 988')) quickHelpGrade += 1; 
    
-    const crisisRaw = Array.isArray(row[18]) ? row[18][0] : row[18];
-    if (String (crisisRaw).toLowerCase().includes('crisis')) crisis +=1;
+    const crisisRawData = Array.isArray(row[18]) ? row[18][0] : row[18];
+    if (String (crisisRawData).toLowerCase().includes('crisis')) crisisGrade +=1;
 
-    const afterHoursRaw = Array.isArray(row[19]) ? row[19][0] : row[19]; // column T
-     if (String (afterHoursRaw).toLowerCase().includes('988 and guard me')) afterHours +=1;
+    const afterHoursRawData = Array.isArray(row[19]) ? row[19][0] : row[19]; 
+     if (String (afterHoursRawData).toLowerCase().includes('988 and guard me')) afterHoursGrade +=1;
   });
 
   const chartData = [
-    { name: 'Quick help', amount: Math.round((quickHelp / total) * 100), color: 'bg-blue-500' },
-    { name: 'Crisis resources', amount: Math.round((crisis / total) * 100), color: 'bg-indigo-500' },
-    { name: 'After-hours path', amount: Math.round((afterHours / total) * 100), color: 'bg-cyan-500' },
-  ];
+    {name:'Quick help', amount: Math.round((quickHelpGrade/ totalGrades) * 100), color: 'bg-blue-500' },
+     {name:'Crisis resources',amount: Math.round((crisisGrade/ totalGrades) * 100), color: 'bg-indigo-500' },
+    {name:'After hours path',amount: Math.round((afterHoursGrade/ totalGrades) * 100), color: 'bg-cyan-500' }
+    
+  ]
 
   return (
 
     <Card className="max-w-md mx-auto p-6 Card">
       <h3 className="text-lg font-bold mb-4">
-        Awareness Snapshot
+        Student Resource Awareness
       </h3>
 
       <div className="grid grid-cols-3 gap-2 mb-8">
@@ -70,11 +72,11 @@ export default function AwarenessSnapshot({ rawData }: AwarenessSnapshotProps) {
           valueFormatter={(value) => `${value}%`}
         />
 
-        <div className="mt-8 grid grid-cols-2 gap-x-10 gap-y-3">
+        <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-3">
           {chartData.map((item) => (
             <div key={item.name} className="flex items-center space-x-2">
               <span
-                className={classNames(item.color, 'h-2 w-6 rounded-full shrink-0')}
+                className={classNames(item.color,'h-2 w-6 rounded-full shrink-0')}
                 aria-hidden={true}
               />
               <span className="text-sm font-medium text-slate-600 leading-none">

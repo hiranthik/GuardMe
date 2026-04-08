@@ -40,27 +40,27 @@ export default function KPICards({ rawData }: KPICardsProps) {
   if (!rawData || rawData.length === 0) return null;
  
   const MS_PER_DAY = 1000 * 60 * 60 * 24;
-  const today = new Date();
-  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  const currentStart = new Date(todayMidnight.getTime() - 30 * MS_PER_DAY);
-  const previousStart = new Date(todayMidnight.getTime() - 60 * MS_PER_DAY);
+  const today= new Date();
+  const todayMidnight = new Date(today.getFullYear(),today.getMonth(), today.getDate());
+  const currentStart= new Date(todayMidnight.getTime() - 30 * MS_PER_DAY);
+  const previousStart = new Date(todayMidnight.getTime()- 60 * MS_PER_DAY);
  
   const empty = { totalScore: 0, count: 0, awareness: 0, access: 0, atRisk: 0 };
   const current = { ...empty };
   const previous = { ...empty };
  
   rawData.forEach((row) => {
-    const scoreRaw     = Array.isArray(row[29]) ? row[29][0] : row[29]; // col AD = index 29
-    const quickHelpRaw = Array.isArray(row[16]) ? row[16][0] : row[16]; // col Q  = index 15
-    const accessRaw    = Array.isArray(row[6])  ? row[6][0]  : row[6];  // col G  = index 6
-    const timestampRaw = Array.isArray(row[0])  ? row[0][0]  : row[0];  // col A  = index 0
+    const scoreRaw = Array.isArray(row[29]) ? row[29][0] : row[29]; 
+    const quickHelpRaw = Array.isArray(row[16]) ? row[16][0] : row[16]; 
+    const accessRaw= Array.isArray(row[6])  ? row[6][0]  : row[6];  
+    const timestampRaw = Array.isArray(row[0])  ? row[0][0]  : row[0];  
  
     const score = parseFloat(String(scoreRaw).trim());
     if (isNaN(score)) return;
  
-    const isAwareness = String(quickHelpRaw).toLowerCase().includes('by calling 988');
-    const isAccess    = String(accessRaw).toLowerCase().includes('yes');
-    const isAtRisk    = (score / 20) * 100 < 50;
+    const isAwareness= String(quickHelpRaw).toLowerCase().includes('by calling 988');
+    const isAccess= String(accessRaw).toLowerCase().includes('yes');
+    const isAtRisk= (score / 20) * 100 < 50;
  
     const date = parseRowDate(timestampRaw);
     if (!date) return;
@@ -68,27 +68,27 @@ export default function KPICards({ rawData }: KPICardsProps) {
     if (date >= currentStart && date <= todayMidnight) {
       current.totalScore += score;
       current.count += 1;
-      if (isAwareness) current.awareness += 1;
-      if (isAccess)    current.access += 1;
-      if (isAtRisk)    current.atRisk += 1;
+      if(isAwareness) current.awareness += 1;
+      if(isAccess)current.access += 1;
+      if(isAtRisk) current.atRisk += 1;
     } else if (date >= previousStart && date < currentStart) {
       previous.totalScore += score;
       previous.count += 1;
-      if (isAwareness) previous.awareness += 1;
-      if (isAccess)    previous.access += 1;
-      if (isAtRisk)    previous.atRisk += 1;
+      if(isAwareness) previous.awareness += 1;
+      if(isAccess)previous.access += 1;
+      if(isAtRisk) previous.atRisk += 1;
     }
   });
  
-  const literacyNow  = calcPct(current.totalScore, current.count * 20);
-  const awarenessNow = calcPct(current.awareness,  current.count);
-  const accessNow    = calcPct(current.access,     current.count);
-  const atRiskNow    = calcPct(current.atRisk,     current.count);
+  const literacyNow =calcPct(current.totalScore, current.count * 20);
+  const awarenessNow =calcPct(current.awareness,current.count);
+  const accessNow=calcPct(current.access,current.count);
+  const atRiskNow =calcPct(current.atRisk, current.count);
  
-  const literacyPrev  = calcPct(previous.totalScore, previous.count * 20);
-  const awarenessPrev = calcPct(previous.awareness,  previous.count);
-  const accessPrev    = calcPct(previous.access,     previous.count);
-  const atRiskPrev    = calcPct(previous.atRisk,     previous.count);
+  const literacyPrev = calcPct(previous.totalScore, previous.count * 20);
+  const awarenessPrev=calcPct(previous.awareness, previous.count);
+  const accessPrev =calcPct(previous.access,previous.count);
+  const atRiskPrev= calcPct(previous.atRisk,previous.count);
  
   function diff(
     now: number,
@@ -99,14 +99,14 @@ export default function KPICards({ rawData }: KPICardsProps) {
     const delta = parseFloat((now - prev).toFixed(1));
     const isUp = delta >= 0;
     return {
-      change: `${Math.abs(delta)}%`,
-      changeType: (invertDirection ? !isUp : isUp) ? 'positive' : 'negative',
+      change:`${Math.abs(delta)}%`,
+      changeType: (invertDirection ? !isUp:isUp) ? 'positive' : 'negative',
     };
   }
  
   const cards = [
     {
-      name: 'Literacy',
+      name:'Literacy',
       stat: `${literacyNow}%`,
       previousStat: `${literacyPrev}%`,
       ...diff(literacyNow, literacyPrev),
@@ -118,10 +118,10 @@ export default function KPICards({ rawData }: KPICardsProps) {
       ...diff(awarenessNow, awarenessPrev),
     },
     {
-      name: 'Access',
-      stat: `${accessNow}%`,
-      previousStat: `${accessPrev}%`,
-      ...diff(accessNow, accessPrev),
+      name:'Access',
+      stat:`${accessNow}%`,
+      previousStat:`${accessPrev}%`,
+      ...diff(accessNow,accessPrev),
     },
     {
       name: 'At Risk',

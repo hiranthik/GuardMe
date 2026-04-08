@@ -4,13 +4,13 @@ import { handleLogout } from "@/app/actions/auth";
 
 export default function LogoutButton() {
   return (
-    <button
-      onClick={async () => {
+  <button
+    onClick={async () => {
   await handleLogout();
 }}
-      className="px-4 py-1.5 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 transition text-sm font-medium"
+    className="px-4 py-1.5 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 transition text-sm font-medium"
     >
-      Sign Out
+    Sign Out
     </button>
   );
 }
