@@ -10,73 +10,71 @@ import KPICards from '@/components/dashboard/kpis/KPICards';
 import Sidebar from '@/components/dashboard/Sidebar';
 import { useQuery } from '@tanstack/react-query';
 
-interface DashboardClientProps {
+interface DashboardClient0 {
   role: string | null | undefined;
 }
 
-export default function DashboardClient({ role }: DashboardClientProps) {
+export default function DashboardClient1({ role }: DashboardClient0) {
   const { data, isLoading, error } = useQuery({
-    queryKey: ['surveyData'],
+    queryKey: ['responseData'],
     queryFn: () => fetch('/api/survey').then((res) => res.json()),
-    refetchInterval: 30000,
+    refetchInterval: 30000, //polling every 30secs
+    
   });
 
   if (isLoading) return <div className="p-8">Loading stats...</div>;
-  if (error) return <div className="p-8 text-red-500">Error loading data.</div>;
+  if (error) return <div className="p-8 text-red-500">Failed to load data. Please try again.</div>;
 
-  const rows = data?.rows || [];
+  const rowData = data?.rows || [];
 
+  //exporting datasets for admins
   const handleExport = () => {
-    const csv = rows.map((row: any[]) => row.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'survey-data.csv';
-    a.click();
+    const csvContent = rowData.map((row: any[]) => row.join(',')).join('\n');
+    const csvBlob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(csvBlob);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = url;
+    downloadLink.download = 'survey-data.csv';
+    downloadLink.click();
     URL.revokeObjectURL(url);
   };
 
   return (
     <div className="flex gap-8 w-full">
-
-      {/* Sidebar — only pass onExport if admin */}
       <Sidebar onExport={role === 'admin' ? handleExport : undefined} />
+      <div className="flex-1 space-y-8">
 
-      {/* Main content */}
-      <div className="flex-1 space-y-8 min-w-0">
-
-        {/* KPI Cards */}
+  
         <section id="overview" className="scroll-mt-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-            <KPICards rawData={rows} />
+          <div className=" sm:grid-cols-2 lg:grid-cols-4  w-full dashboardcards">
+            <KPICards rawData={rowData} />
           </div>
         </section>
 
-        {/* Literacy */}
+    
         <section id="literacy" className="scroll-mt-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch w-full">
+          <div className="lg:grid-cols-3 dashboardcards">
             <div className="lg:col-span-2">
-              <LiteracyTrendChart rawData={rows} />
+              <LiteracyTrendChart rawData={rowData} />
             </div>
             <div className="lg:col-span-1" id="awareness">
-              <AwarenessSnapshot rawData={rows} />
+              <AwarenessSnapshot rawData={rowData} />
             </div>
           </div>
         </section>
 
-        {/* Access and Usage */}
+      
         <section id="access" className="scroll-mt-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
-            <CampusLiteracyChart rawData={rows} />
-            <SubgroupAnalysisTable rawData={rows} />
+          <div className="lg:grid-cols-2 dashboardcards">
+            <CampusLiteracyChart rawData={rowData} />
+            <SubgroupAnalysisTable rawData={rowData} />
           </div>
         </section>
 
-        {/* Barriers */}
+     
         <section id="barriers" className="scroll-mt-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
-            <TopBarriers rawData={rows} />
+          <div className=" lg:grid-cols-2 dashboardcards w-full">
+            <TopBarriers rawData={rowData} />
             <Methodology />
           </div>
         </section>

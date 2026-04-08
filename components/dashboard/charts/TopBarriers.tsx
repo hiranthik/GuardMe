@@ -15,7 +15,7 @@ export function TopBarriers({ rawData }: TopBarriersProps) {
   const barrierCount: Record<string, number> = {};
 
   rawData.forEach((row) => {
-    const barrierRaw = Array.isArray(row[28]) ? row[28][0] : row[28]; // col AC = index 28
+    const barrierRaw = Array.isArray(row[28]) ? row[28][0] : row[28]; 
     if (!barrierRaw) return;
 
     const barriers = String(barrierRaw).split(/[,;]/).map((b) => b.trim()).filter(Boolean);

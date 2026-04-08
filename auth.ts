@@ -17,7 +17,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       const email = profile?.email ?? '';
       const adminEmails = process.env.ADMIN_EMAILS?.split(',').map(e => e.trim()) || [];
 
-      // allow admins in regardless of domain, block everyone else unless algomau
+    
       return adminEmails.includes(email) || email.endsWith('@algomau.ca');
     },
 

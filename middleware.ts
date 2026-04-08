@@ -6,7 +6,7 @@ export default auth((req) => {
   const { nextUrl } = req;
 
   const isDashboard = nextUrl.pathname.startsWith("/dashboard");
-  const isApi = nextUrl.pathname.startsWith("/api/survey"); // Protect specific API routes
+  const isApi = nextUrl.pathname.startsWith("/api/survey"); 
 
   if ((isDashboard || isApi) && !isLoggedIn) {
     return NextResponse.redirect(new URL("/login", nextUrl));
@@ -16,6 +16,6 @@ export default auth((req) => {
 });
 
 export const config = {
-  // Ensure this matcher covers all protected routes
+
   matcher: ["/dashboard/:path*", "/api/survey/:path*"],
 };

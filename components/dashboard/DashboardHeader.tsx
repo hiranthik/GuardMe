@@ -7,19 +7,19 @@ export default function DashboardHeader() {
     <div className="w-full px-6 py-4 border-b dashboard-header">
       <div className="flex items-center justify-between">
         
-        {/* LEFT: Logo + Title */}
+  
         <div className="flex items-center gap-3">
-          {/* Using the blue icon from the first screenshot */}
+    
           <div className="w-5 h-5 rounded-md bg-blue-600 shadow-sm" />
           <div>
-           <h1 className="text-lg font-bold text-slate-800 leading-tight" suppressHydrationWarning >
+          <h1 className="text-lg font-bold text-slate-800 leading-tight" suppressHydrationWarning >
               Algoma Wellness
             <span suppressHydrationWarning> : Student Mental Health Survey Dashboard</span>
           </h1>
           </div>
         </div>
 
-        {/* RIGHT: Nav + Sign Out */}
+
         <div className="flex items-center gap-6 text-sm">
           <button className="px-5 py-1.5 rounded-full bg-white shadow-sm border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition">
             Resources
@@ -27,7 +27,7 @@ export default function DashboardHeader() {
           <button className="text-blue-600 font-medium hover:underline">
             Settings
           </button>
-          {/* Replaced Admin text with the actual Logout Button */}
+          
           <LogoutButton />
         </div>
       </div>

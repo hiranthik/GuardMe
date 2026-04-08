@@ -2,21 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-/* app/globals.css */
 @layer components {
   .dashboard-theme {
     @apply min-h-screen p-8;
-    background: transparent; /* let the body gradient show through */
+    background: transparent; 
   }
   .dashboard-header {
-    background: linear-gradient(135deg, #f0edf2 0%, #e4dbf4 50%, #e5d8e4 100%) fixed;
+    background: linear-gradient(135deg, #f0edf2 0%, #cdb9ef 50%, #e5d8e4 100%) fixed;
 }
  .pink-bg {
     @apply bg-gradient-to-br from-purple-100 via-pink-50 to-pink-100;
   }
 
   .login{
-    background: linear-gradient(135deg, #9b41d7 0%, #ecb6d7 50%, #e5d8e4 100%) fixed
+    background: linear-gradient(135deg, #9a41d6 0%, #eda6d2 50%, #e5d8e4 100%) fixed;
   }
 }
 
@@ -27,3 +26,6 @@ body {
   background-size: cover;
 }
 
+.dashboardcards{
+  @apply gap-6 grid grid-cols-1
+}

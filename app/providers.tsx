@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  // We use useState so the client is only created once per session
+  
   const [queryClient] = useState(() => new QueryClient());
 
   return (
